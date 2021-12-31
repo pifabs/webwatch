@@ -1,0 +1,22 @@
+{
+	"env": {
+		"browser": true,
+		"commonjs": true,
+		"es2021": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 13
+	},
+	"globals": {
+		"__dirname": "readonly",
+		"process": "readonly"
+	},
+	"rules": {
+		"no-unused-vars": [2, { "vars": "all", "args": "none" }],
+		"no-trailing-spaces": 2,
+		"no-undef": 2,
+		"no-undef-init": 2,
+		"no-multiple-empty-lines": 1,
+		"quotes": ["error", "single"]
+ 	}
+}

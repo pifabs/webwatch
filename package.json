@@ -1,0 +1,30 @@
+{
+	"name": "webwatch",
+	"version": "0.0.1",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon -r dotenv/config app.js",
+		"start": "./node_modules/.bin/pm2 start pm2.config.js",
+		"lint": "./node_modules/.bin/eslint --no-error-on-unmatched-pattern .",
+		"lint-html": "./node_modules/.bin/eslint --no-error-on-unmatched-pattern . -f html -o ./reports/lint-results.html",
+		"lint-fix": "./node_modules/.bin/eslint --fix --no-error-on-unmatched-pattern ."
+	},
+	"keywords": [],
+	"author": "pifabs",
+	"license": "MIT",
+	"dependencies": {
+		"bull": "^4.1.1",
+		"d3-node": "^2.2.3",
+		"discord.js": "^13.3.1",
+		"dotenv": "^10.0.0",
+		"mongoose": "^6.1.2",
+		"pm2": "^5.1.2",
+		"sharp": "^0.29.3",
+		"superagent": "^6.1.0"
+	},
+	"devDependencies": {
+		"eslint": "^8.5.0",
+		"nodemon": "^2.0.15"
+	}
+}

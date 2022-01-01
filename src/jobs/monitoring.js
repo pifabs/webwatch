@@ -1,6 +1,7 @@
 'use-strict';
 
 const superagent = require('superagent');
+const nunjucks = require('nunjucks');
 
 const webwatch = require('../../index');
 const { Channel, Settings, Job, SiteStatus } = webwatch.models;
@@ -55,10 +56,24 @@ async function sitesCheckProcessor(job) {
 	if (!channel) return;
 
 	const settings = await Settings.get(job.data.channel);
-	if (('enable' in settings) && JSON.parse(settings.enable)) {
-		const response = await handleCheckSites(channel.sites);
+	if (('enable' in settings) && +settings.enable) {
+		const {rejected} = await handleCheckSites(channel.sites);
 
-		// webwatch.bot.client.channels.cache.get(channel.channelId).send(response);
+		if (rejected.length && +settings.alert) {
+			const html = nunjucks.render(
+				'email.html', {
+					items: rejected
+				});
+
+			const info = await webwatch.emailer.sendMail({
+				from: `"WebWatch" <${webwatch.emailer.options.auth.user}>`,
+				to: settings.email,
+				subject: 'WebWatch Notification',
+				html,
+			});
+
+			console.log('Message sent: %s', info.messageId);
+		}
 	}
 }
 
@@ -66,8 +81,8 @@ async function sitesCheckProcessor(job) {
 async function handleCheckSites(sites) {
 	let statuses = await checkSites(sites);
 	statuses = collectResults(statuses);
-	await saveStatuses(statuses);
-	return makeResponse(statuses);
+	await saveStatuses(Object.values(statuses).flat(2));
+	return statuses;
 }
 
 
@@ -76,7 +91,7 @@ function checkSites(sites) {
 		sites.map(async site => {
 			return checkSite(site);
 		}
-	));
+		));
 }
 
 
@@ -86,37 +101,37 @@ function checkSite({url, _id}) {
 		timer.start();
 
 		superagent.get(url)
-		.timeout(5000)
-		.end((err, res) => {
-			const responseTime = timer.elapse();
-			if (err) {
-				return not_ok({
+			.timeout(5000)
+			.end((err, res) => {
+				const responseTime = timer.elapse();
+				if (err) {
+					return not_ok({
+						siteId: _id,
+						url,
+						responseTime,
+						isOnline: false,
+						status_code: err.statusCode,
+						message: err.message
+					});
+				}
+				if (res.statusCode >= 400) {
+					return not_ok({
+						siteId: _id,
+						url,
+						responseTime,
+						isOnline: false,
+						message: `RESPONSED WITH STATUS CODE ${res.statusCode}`,
+						status_code: res.statusCode
+					});
+				}
+				return ok({
 					siteId: _id,
 					url,
 					responseTime,
-					isOnline: false,
-					status_code: err.statusCode,
-					message: err.message
-				});
-			}
-			if (res.statusCode >= 400) {
-				return not_ok({
-					siteId: _id,
-					url,
-					responseTime,
-					isOnline: false,
-					message: `RESPONSED WITH STATUS CODE ${res.statusCode}`,
+					isOnline: true,
 					status_code: res.statusCode
 				});
-			}
-			return ok({
-				siteId: _id,
-				url,
-				responseTime,
-				isOnline: true,
-				status_code: res.statusCode
 			});
-		});
 	});
 }
 
@@ -124,8 +139,8 @@ function checkSite({url, _id}) {
 function saveStatuses(site_statuses) {
 	return Promise.all(
 		site_statuses.map(async (status) => {
-		return saveStatus(status);
-	}));
+			return saveStatus(status);
+		}));
 }
 
 
@@ -161,7 +176,7 @@ function collectResults(statuses) {
 	const rejected = statuses
 		.filter(result => result.status === 'rejected')
 		.map(result => result.reason);
-	return [...fulfilled, ...rejected];
+	return {fulfilled, rejected};
 }
 
 
@@ -180,5 +195,6 @@ module.exports = {
 	removeJob,
 	toggleJobForChannel,
 	sitesCheckProcessor,
-	handleCheckSites
+	handleCheckSites,
+	makeResponse
 };

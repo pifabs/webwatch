@@ -17,6 +17,12 @@
 		"no-undef": 2,
 		"no-undef-init": 2,
 		"no-multiple-empty-lines": 1,
-		"quotes": ["error", "single"]
+		"quotes": ["error", "single"],
+		"brace-style": ["error", "stroustrup"],
+		"indent": [
+			"error",
+			"tab",
+			{ "SwitchCase": 1 }
+		]
  	}
 }

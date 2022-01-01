@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style type="text/css" media="screen">
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+
+		table td  {
+			border:rgb(230, 230, 230) solid #e6e6e6;
+			border-top-color: rgb(230, 230, 230);
+			border-top-style: solid;
+			border-top-width: 1px;
+			border-right-color: rgb(230, 230, 230);
+			border-right-style: solid;
+			border-right-width: 1px;
+			border-bottom-color: rgb(230, 230, 230);
+			border-bottom-style: solid;
+			border-bottom-width: 1px;
+			border-left-color: rgb(230, 230, 230);
+			border-left-style: solid;
+			border-left-width: 1px;
+			border-image-outset: 0;
+			border-image-repeat: stretch;
+			border-image-slice: 100%;
+			border-image-source: none;
+			border-image-width: 1;
+			padding: 0.5em;
+		}
+	</style>
+</head>
+<body>
+	<table>
+		<tr>
+			<th>Status</th>
+			<th>URL</th>
+			<th>Reason</th>
+			<th>Response Time</th>
+		</tr>
+		{% for item in items %}
+			<tr>
+				<td>{{ "DOWN" if not item.isOnline else "UP"}}</td>
+				<td> <a href='{{ item.url }}'>{{ item.url }}</a></td>
+				<td>{{ item.message }}</td>
+				<td>{{ item.responseTime }} ms</td>
+			</tr>
+		{% endfor %}
+	</table>
+</body>
+</html>

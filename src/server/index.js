@@ -1,5 +1,8 @@
 'use-strict';
 
+const path = require('path');
+
+const nunjucks = require('nunjucks');
 const webwatch = require('../../index');
 
 const Database = require('../database/db');
@@ -11,10 +14,12 @@ const errors = require('../errors');
 
 
 module.exports = {
-	start: async function ({dbConfig, botConfig, redisConfig}) {
+	start: async function (configs) {
+		const {dbConfig, botConfig, redisConfig, emailConfig} = configs;
 		this.init();
 		await this.initDb(dbConfig);
 		this.registerQueues(redisConfig);
+		this.setupEmailer(emailConfig);
 		await this.initBot(botConfig);
 	},
 
@@ -46,8 +51,29 @@ module.exports = {
 		});
 
 		const { sitesCheckProcessor } = require('../jobs/monitoring');
-		SiteCheckQueue.registerProcessor(5, sitesCheckProcessor);
+		SiteCheckQueue.registerProcessor(sitesCheckProcessor);
 		SiteCheckQueue.registerListeners();
 		webwatch.addQueue('SiteCheckQueue', SiteCheckQueue);
+	},
+
+	setupEmailer(emailConfig) {
+		webwatch.emailer = webwatch.utils.emailer({
+			host: emailConfig.EMAIL_HOST,
+			port: emailConfig.EMAIL_PORT,
+			secure: +emailConfig.EMAIL_SECURE,
+			requireTLS: +emailConfig.EMAIL_REQUIRE_TLS,
+			auth: {
+			  user: emailConfig.EMAIL_AUTH_USER,
+			  pass: emailConfig.EMAIL_AUTH_PWD,
+			},
+			tls: {
+				ciphers: emailConfig.EMAIL_TLS_CIPHERS,
+			},
+		});
+
+		nunjucks.configure(
+			path.join(__dirname, '../templates'),
+			{ autoescape: true }
+		);
 	}
 };

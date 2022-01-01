@@ -18,9 +18,14 @@ Monitor websites without leaving discord
 ##### Scheduled job:
 `w!sched-job <valid cron expression>` Tell webwatch when and how often to check your websites.
 
-`w!enable-job <true|false>` Enable/disable scheduled job.
+`w!enable-job <1|0>` Enable/disable scheduled job.
 
 `w!rm-job` Terminate and delete scheduled job.
+
+##### Alerts
+`w!set-email <valid email>` Set an email to receive notification
+
+`w!enable-alert <1|0>` Enable/disable alerts.
 
 ##### Status and Reports:
 `w!check-status` Manually trigger the checking. This will list all your website and their status.

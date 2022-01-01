@@ -4,43 +4,43 @@ const D3Node = require('d3-node');
 
 
 function lineChart({
-  data,
-  selector: _selector = '#chart',
-  container: _container = `
+	data,
+	selector: _selector = '#chart',
+	container: _container = `
 	<div id="container">
 	  <h2>Line Chart</h2>
 	  <div id="chart"></div>
 	</div>
   `,
-  style: _style = '',
-  width: _width = 960,
-  height: _height = 500,
-  margin: _margin = { top: 20, right: 20, bottom: 60, left: 30 },
-  lineWidth: _lineWidth = 1.5,
-  lineColor: _lineColor = 'steelblue',
-  lineColors: _lineColors = ['steelblue'],
-  isCurve: _isCurve = true,
-  tickSize: _tickSize = 5,
-  tickPadding: _tickPadding = 5,
-  rotateX: _rotateX = 0,
-  title: title = 0,
-  xAxisTitle: _xAxisTitle= '',
-  yAxisTitle: _yAxisTitle= '',
-  xTickFormat: _xTickFormat = null,
-  yTickFormat: _yTickFormat = null
+	style: _style = '',
+	width: _width = 960,
+	height: _height = 500,
+	margin: _margin = { top: 20, right: 20, bottom: 60, left: 30 },
+	lineWidth: _lineWidth = 1.5,
+	lineColor: _lineColor = 'steelblue',
+	lineColors: _lineColors = ['steelblue'],
+	isCurve: _isCurve = true,
+	tickSize: _tickSize = 5,
+	tickPadding: _tickPadding = 5,
+	rotateX: _rotateX = 0,
+	title: title = 0,
+	xAxisTitle: _xAxisTitle= '',
+	yAxisTitle: _yAxisTitle= '',
+	xTickFormat: _xTickFormat = null,
+	yTickFormat: _yTickFormat = null
 } = {}) {
-  const d3n = new D3Node({
-	selector: _selector,
-	svgStyles: _style,
-	container: _container,
-  });
+	const d3n = new D3Node({
+		selector: _selector,
+		svgStyles: _style,
+		container: _container,
+	});
 
-  const d3 = d3n.d3;
+	const d3 = d3n.d3;
 
-  const width = _width - _margin.left - _margin.right;
-  const height = _height - _margin.top - _margin.bottom;
+	const width = _width - _margin.left - _margin.right;
+	const height = _height - _margin.top - _margin.bottom;
 
-  const svg = d3n.createSVG(_width, _height)
+	const svg = d3n.createSVG(_width, _height)
 		.append('g')
 		.attr('transform', `translate(${_margin.left}, ${_margin.top})`);
 
@@ -110,10 +110,10 @@ function lineChart({
 
 	if(_rotateX) {
 		g.selectAll('text')
-		.style('text-anchor', 'end')
-		.attr('dx', '-.8em')
-		.attr('dy', '.15em')
-		.attr('transform', `rotate(${_rotateX})`);
+			.style('text-anchor', 'end')
+			.attr('dx', '-.8em')
+			.attr('dy', '.15em')
+			.attr('transform', `rotate(${_rotateX})`);
 	}
 
 	g.append('g')

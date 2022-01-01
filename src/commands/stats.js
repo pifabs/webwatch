@@ -18,7 +18,7 @@ module.exports = {
 		let channel = await Channel.findOne({'channelId': message.channelId});
 		const idxs = [... new Set(args)];
 		const sites = channel.sites
-						.filter((site, idx) => idxs.includes(`${idx}`));
+			.filter((site, idx) => idxs.includes(`${idx}`));
 
 		const dashBoardData = await getDashboardData(sites);
 		const fields = makeFields(dashBoardData);
@@ -70,51 +70,51 @@ function makeFields(dashBoardData) {
 	return dashBoardData.map(datum => {
 		const { healthSMA, responsetimeSMA, latestStatus } = datum;
 		const stats = [{
-				name: datum.site.url,
-				value: '\u200B',
-				inline: false
-			},
-			{
-				name: 'Health(current)',
-				value: `${healthSMA ? healthSMA.health + '%' : '--'}`,
-				inline: true
-			},
-			{
-				name: 'Avg Health(30mins)',
-				value: `${healthSMA ? healthSMA.sma30Mins.toFixed(2) + '%' : '--'}`,
-				inline: true
-			},
-			{
-				name: 'Avg Health(24hrs)',
-				value: `${healthSMA ? healthSMA.sma24Hrs.toFixed(2) + '%' : '--'}`,
-				inline: true
-			},
-			{
-				name: 'Avg Health(30days)',
-				value: `${healthSMA ? healthSMA.sma30Days.toFixed(2) + '%' : '--'}`,
-				inline: true
-			},
-			{ name: '\u200B', value: '\u200B' },
-			{
-				name: 'Response Time(current)',
-				value: `${responsetimeSMA ? responsetimeSMA.responseTime.toFixed(2) + ' ms' : '--'}`,
-				inline: true
-			},
-			{
-				name: 'Avg Response Time(30mins)',
-				value: `${responsetimeSMA ? responsetimeSMA.sma30Mins.toFixed(2) + ' ms' : '--'}`,
-				inline: true
-			},
-			{
-				name: 'Avg Response Time(24hrs)',
-				value: `${responsetimeSMA ? responsetimeSMA.sma24Hrs.toFixed(2) + ' ms' : '--'}`,
-				inline: true
-			},
-			{
-				name: 'Avg Response Time(30days)',
-				value: `${responsetimeSMA ? responsetimeSMA.sma30Days.toFixed(2) + ' ms' : '--'}`,
-				inline: true
-			}
+			name: datum.site.url,
+			value: '\u200B',
+			inline: false
+		},
+		{
+			name: 'Health(current)',
+			value: `${healthSMA ? healthSMA.health + '%' : '--'}`,
+			inline: true
+		},
+		{
+			name: 'Avg Health(30mins)',
+			value: `${healthSMA ? healthSMA.sma30Mins.toFixed(2) + '%' : '--'}`,
+			inline: true
+		},
+		{
+			name: 'Avg Health(24hrs)',
+			value: `${healthSMA ? healthSMA.sma24Hrs.toFixed(2) + '%' : '--'}`,
+			inline: true
+		},
+		{
+			name: 'Avg Health(30days)',
+			value: `${healthSMA ? healthSMA.sma30Days.toFixed(2) + '%' : '--'}`,
+			inline: true
+		},
+		{ name: '\u200B', value: '\u200B' },
+		{
+			name: 'Response Time(current)',
+			value: `${responsetimeSMA ? responsetimeSMA.responseTime.toFixed(2) + ' ms' : '--'}`,
+			inline: true
+		},
+		{
+			name: 'Avg Response Time(30mins)',
+			value: `${responsetimeSMA ? responsetimeSMA.sma30Mins.toFixed(2) + ' ms' : '--'}`,
+			inline: true
+		},
+		{
+			name: 'Avg Response Time(24hrs)',
+			value: `${responsetimeSMA ? responsetimeSMA.sma24Hrs.toFixed(2) + ' ms' : '--'}`,
+			inline: true
+		},
+		{
+			name: 'Avg Response Time(30days)',
+			value: `${responsetimeSMA ? responsetimeSMA.sma30Days.toFixed(2) + ' ms' : '--'}`,
+			inline: true
+		}
 		];
 
 		if (latestStatus && !latestStatus.isOnline) {
@@ -129,5 +129,5 @@ function makeFields(dashBoardData) {
 
 		return stats;
 	})
-	.flat(2);
+		.flat(2);
 }

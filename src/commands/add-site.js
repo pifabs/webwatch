@@ -22,7 +22,9 @@ module.exports = {
 
 		urls = await utils.getOrigins(urls)
 			.filter(url => !channel.findSiteByUrl(url))
-			.map(url => { return {url}; });
+			.map(url => {
+				return {url};
+			});
 
 		if (urls.length) {
 			await channel.addSites(urls).save();

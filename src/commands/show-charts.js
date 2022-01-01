@@ -65,8 +65,8 @@ async function makeUptimeChart({site, startDate, endDate}) {
 	}
 
 	site_statuses = site_statuses
-	.map(s => s.statuses)
-	.reduce((a, b) => [...a, ...b]);
+		.map(s => s.statuses)
+		.reduce((a, b) => [...a, ...b]);
 
 	const svgpath = path.join(
 		__dirname,
@@ -112,8 +112,8 @@ async function makeResponseTimeChart({site, startDate, endDate}) {
 	}
 
 	site_statuses = site_statuses
-	.map(s => s.statuses)
-	.flat(2);
+		.map(s => s.statuses)
+		.flat(2);
 
 	const svgpath = path.join(
 		__dirname,
@@ -178,7 +178,8 @@ async function generateSVGChart(options) {
 		await utils.rmAsync(svgpath);
 		await utils.rmAsync(pngpath);
 		return new MessageAttachment(image);
-	  } catch (err) {
+	  }
+	catch (err) {
 		console.error(err);
 		throw err;
 	  }

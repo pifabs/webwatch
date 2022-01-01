@@ -18,53 +18,63 @@ module.exports = {
 				{ name: '\u200B', value: '\u200B' },
 				{
 					name: ':pencil: Add site to monitor',
-					value: '!add-site <site1 site2 ...>',
+					value: 'w!add-site <site1 site2 ...>',
 					inline: true
 				},
 				{
 					name: ':notepad_spiral: List sites you\'ve added',
-					value: '!ls-sites',
+					value: 'w!ls-sites',
 					inline: true
 				},
 				{
 					name: ':scissors: Remove site by index',
-					value: '!rm-site <idx>',
+					value: 'w!rm-site <idx>',
+					inline: true
+				},
+				{
+					name: ':email: Set email',
+					value: 'w!set-email <valid email>',
+					inline: true
+				},
+				{
+					name: ':bell: ON/OFF Alert on down time',
+					value: 'w!enable-alert <1|0>',
 					inline: true
 				},
 				{
 					name: ':clock3: Schedule checks',
-					value: '!sched-job <valid cron expression>',
+					value: 'w!sched-job <valid cron expression>',
 					inline: true
 				},
 				{
 					name: ':gear: ON\\OFF scheduled checks',
-					value: '!enable-job <true|false>',
+					value: 'w!enable-job <1|0>',
 					inline: true
 				},
 				{
-					name: 'Remove sceduled checks',
-					value: '!rm-job',
+					name: ':x: Remove sceduled checks',
+					value: 'w!rm-job',
 					inline: true
 				},
 				{ name: '\u200B', value: '\u200B' },
 				{
 					name: ':stethoscope: Check your sites\' status',
-					value: '!check-status',
+					value: 'w!check-status',
 					inline: true
 				},
 				{
 					name: 'View site\'s stats',
-					value: '!stats <idx1, idx2 ...>',
+					value: 'w!stats <idx1, idx2 ...>',
 					inline: true
 				},
 				{ name: '\u200B', value: '\u200B' },
 				{
 					name: ':chart_with_downwards_trend: View charts',
-					value: '!show-charts <idx>',
+					value: 'w!show-charts <idx>',
 					inline: false
 				}
 			)
 			.setTimestamp()
-			message.reply({embeds: [help]});
+		message.reply({embeds: [help]});
 	}
 };

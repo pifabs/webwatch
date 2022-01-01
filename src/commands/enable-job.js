@@ -20,7 +20,7 @@ module.exports = {
 			key: 'enable'
 		};
 
-		const enable = args[0] == 'true' ? true : false;
+		const enable = +args[0];
 		const update = {
 			...filter,
 			value: enable

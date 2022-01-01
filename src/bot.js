@@ -67,7 +67,8 @@ class Bot {
 				if (!channel) return
 
 				await cmd.execute({message, channel, args});
-			} catch (err) {
+			}
+			catch (err) {
 				console.error(err);
 				message.reply(err.message);
 			}

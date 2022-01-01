@@ -14,12 +14,12 @@ module.exports = class Database {
 
 	connect() {
 		mongoose.connect(this.url)
-		.then(() => {
-			console.log(`Connected to the database: ${this.url}`);
-		})
-		.catch(err=> {
-			throw err;
-		});
+			.then(() => {
+				console.log(`Connected to the database: ${this.url}`);
+			})
+			.catch(err=> {
+				throw err;
+			});
 	}
 
 	migrate() {

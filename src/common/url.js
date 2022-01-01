@@ -13,7 +13,8 @@ function isValidURL(urlString) {
 				if (err) return notOk(err);
 				return ok(true);
 			});
-		} catch (err) {
+		}
+		catch (err) {
 			return notOk(err);
 		}
 	});

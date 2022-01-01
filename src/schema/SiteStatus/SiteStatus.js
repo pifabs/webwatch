@@ -43,11 +43,11 @@ siteStatusSchema.statics.getLatestStatus = async function({siteId}) {
 	const result = await this.aggregate([
 		{
 			$match: {
-					siteId,
-					forDate: {
-						$gte: new Date(startDate),
-						$lt: new Date(endDate)
-					}
+				siteId,
+				forDate: {
+					$gte: new Date(startDate),
+					$lt: new Date(endDate)
+				}
 			}
 		},
 		{$unwind: '$statuses'},
@@ -80,66 +80,66 @@ siteStatusSchema.statics.getLatestStatus = async function({siteId}) {
 siteStatusSchema.statics.getResponsetimeSMA = function({siteId, limit, sort}) {
 	// https://www.mongodb.com/developer/article/time-series-candlestick-sma-ema/
 	return this.aggregate([
-			{
-				$match: { siteId }
-			},
-			{ $unwind: '$statuses' },
-			{
-				$replaceRoot: { newRoot: '$statuses' }
-			},
-			{
-				$addFields: { 'statuses.siteId': '$siteId' }
-			},
-			{
-				$group: {
-					_id: {
-						siteId: '$siteId',
-						createdAt: {
-							$dateTrunc: {
-								date: '$createdAt',
-								unit: 'minute',
-								binSize: 5
-							},
+		{
+			$match: { siteId }
+		},
+		{ $unwind: '$statuses' },
+		{
+			$replaceRoot: { newRoot: '$statuses' }
+		},
+		{
+			$addFields: { 'statuses.siteId': '$siteId' }
+		},
+		{
+			$group: {
+				_id: {
+					siteId: '$siteId',
+					createdAt: {
+						$dateTrunc: {
+							date: '$createdAt',
+							unit: 'minute',
+							binSize: 5
 						},
 					},
-					max: { $max: '$responseTime' },
-					min: { $min: '$responseTime' },
-					first: { $first: '$responseTime' },
-					last: { $last: '$responseTime' }
-				}
-			},
-			{
-				$sort: { '_id.createdAt': 1 }
-			},
-			{
-				$project: {
-					_id: 1,
-					responseTime: '$last'
 				},
+				max: { $max: '$responseTime' },
+				min: { $min: '$responseTime' },
+				first: { $first: '$responseTime' },
+				last: { $last: '$responseTime' }
+			}
+		},
+		{
+			$sort: { '_id.createdAt': 1 }
+		},
+		{
+			$project: {
+				_id: 1,
+				responseTime: '$last'
 			},
-			{
-				$setWindowFields: {
-					partitionBy: '_id.siteId',
-					sortBy: { '_id.createdAt': 1 },
-					output: {
-						sma30Mins: {
-							$avg: '$responseTime',
-							window: { range: [-30, 0], unit: 'minute' }
-						},
-						sma24Hrs: {
-							$avg: '$responseTime',
-							window: { range: [-24, 0], unit: 'hour' }
-						},
-						sma30Days: {
-							$avg: '$responseTime',
-							window: { range: [-30, 0], unit: 'day' }
-						}
+		},
+		{
+			$setWindowFields: {
+				partitionBy: '_id.siteId',
+				sortBy: { '_id.createdAt': 1 },
+				output: {
+					sma30Mins: {
+						$avg: '$responseTime',
+						window: { range: [-30, 0], unit: 'minute' }
+					},
+					sma24Hrs: {
+						$avg: '$responseTime',
+						window: { range: [-24, 0], unit: 'hour' }
+					},
+					sma30Days: {
+						$avg: '$responseTime',
+						window: { range: [-30, 0], unit: 'day' }
 					}
 				}
-			},
-			sort ? { $sort: sort } : {},
-			limit ? { $limit: limit } : {}
-		]
+			}
+		},
+		sort ? { $sort: sort } : {},
+		limit ? { $limit: limit } : {}
+	]
 	);
 }
 
@@ -147,72 +147,72 @@ siteStatusSchema.statics.getResponsetimeSMA = function({siteId, limit, sort}) {
 siteStatusSchema.statics.getHealthSMA = function({siteId, limit, sort}) {
 	// https://www.mongodb.com/developer/article/time-series-candlestick-sma-ema/
 	return this.aggregate([
-			{
-				$match: { siteId }
-			},
-			{
-				$addFields: { 'statuses.siteId': '$siteId' }
-			},
-			{ $unwind: '$statuses' },
-			{
-				$replaceRoot: { newRoot: '$statuses' }
-			},
-			{
-				$project: {
-					isOnline: {
-						'$multiply': [{ '$toInt': '$isOnline'}, 100]
-					},
-					siteId: 1,
-					createdAt: 1
-				}
-			},
-			{
+		{
+			$match: { siteId }
+		},
+		{
+			$addFields: { 'statuses.siteId': '$siteId' }
+		},
+		{ $unwind: '$statuses' },
+		{
+			$replaceRoot: { newRoot: '$statuses' }
+		},
+		{
+			$project: {
+				isOnline: {
+					'$multiply': [{ '$toInt': '$isOnline'}, 100]
+				},
+				siteId: 1,
+				createdAt: 1
+			}
+		},
+		{
 			   $group: {
-					_id: {
-						siteId: '$siteId',
-						createdAt: {
-							$dateTrunc: {
+				_id: {
+					siteId: '$siteId',
+					createdAt: {
+						$dateTrunc: {
 							date: '$createdAt',
 							unit: 'minute',
 							binSize: 5
-							}
-						}
-					},
-					last: { $last: '$isOnline' }
-				},
-			},
-			{
-				$sort: { '_id.createdAt': 1 },
-			},
-			{
-			   $project: {
-					_id: 1,
-					health: '$last'
-				},
-			},
-			{
-				$setWindowFields: {
-					partitionBy: '_id.siteId',
-					sortBy: { '_id.createdAt': 1 },
-					output: {
-						sma30Mins: {
-							$avg: '$health',
-							window: { range: [-30, 0], unit: 'minute' }
-						},
-						sma24Hrs: {
-							$avg: '$health',
-							window: { range: [-24, 0], unit: 'hour' }
-						},
-						sma30Days: {
-							$avg: '$health',
-							window: { range: [-30, 0], unit: 'day' }
 						}
 					}
-				}
+				},
+				last: { $last: '$isOnline' }
 			},
-			sort ? { $sort: sort } : {},
-			limit ? { $limit: limit } : {}
-		]
+		},
+		{
+			$sort: { '_id.createdAt': 1 },
+		},
+		{
+			   $project: {
+				_id: 1,
+				health: '$last'
+			},
+		},
+		{
+			$setWindowFields: {
+				partitionBy: '_id.siteId',
+				sortBy: { '_id.createdAt': 1 },
+				output: {
+					sma30Mins: {
+						$avg: '$health',
+						window: { range: [-30, 0], unit: 'minute' }
+					},
+					sma24Hrs: {
+						$avg: '$health',
+						window: { range: [-24, 0], unit: 'hour' }
+					},
+					sma30Days: {
+						$avg: '$health',
+						window: { range: [-30, 0], unit: 'day' }
+					}
+				}
+			}
+		},
+		sort ? { $sort: sort } : {},
+		limit ? { $limit: limit } : {}
+	]
 	);
 }
 

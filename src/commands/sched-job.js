@@ -17,7 +17,8 @@ module.exports = {
 
 		try {
 			parser.parseExpression(args.join(' '));
-		} catch (err) {
+		}
+		catch (err) {
 			throw new CommandError('Invalid cron expression.');
 		}
 
